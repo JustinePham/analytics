@@ -13,7 +13,14 @@ const PORT = 4000;
 app.use(cors({ origin: 'http://localhost:5173', credentials: true }));
 
 // Session setup
-app.use(session({ secret: 'your-session-secret', resave: false, saveUninitialized: true }));
+//In development, secure: false should be used because you're running over http. 
+//In production (when using HTTPS), set it to true.
+app.use(session({ secret: 'your-session-secret', resave: false, saveUninitialized: false, cookie: {
+  secure: false,  // Set to 'true' in production if using HTTPS
+  httpOnly: true,
+  maxAge: 24 * 60 * 60 * 1000  // 1 day cookie expiration
+} }));
+
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -68,10 +75,13 @@ app.get('/auth/user', (req, res) => {
 
 // Logout route
 app.get('/auth/logout', (req, res) => {
-  req.logout();
-  res.redirect('/');
+  req.logout((err) => {
+    if (err) { return next(err); }
+    res.redirect('/');
+  });
 });
 
 app.listen(PORT, () => {
   console.log(`OAuth server running at http://localhost:${PORT}`);
 });
+

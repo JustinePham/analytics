@@ -1,8 +1,8 @@
 import { BrowserRouter as Router, Route, Routes, Link, Navigate } from 'react-router-dom'
 import "./styles/App.scss"
-import "./styles/index.scss"
 import axios from 'axios';
 import { useEffect, useState } from 'react';
+ 
 
 interface User {
   id: string;
@@ -18,7 +18,10 @@ const App: React.FC = () => {
     axios
       .get('http://localhost:4000/auth/user', { withCredentials: true })
       .then((response) => setUser(response.data))
-      .catch(() => setUser(null)); // Not authenticated
+      .catch((error) => {
+        console.error('Error fetching user:', error);
+        setUser(null)
+      }); // Not authenticated
   }, []);
 
   const handleLogout = () => {
@@ -27,12 +30,12 @@ const App: React.FC = () => {
 
   return (
     <Router>
-      <div>
-        <nav>
+      <div className="card">
+        <nav className="flex flex-col">
           <ul>
-            <li>
+            {/* <li>
               <Link to="/">Home</Link>
-            </li>
+            </li> */}
             {user ? (
               <>
                 <li>Welcome, {user.displayName}</li>
@@ -42,7 +45,9 @@ const App: React.FC = () => {
               </>
             ) : (
               <li>
-                <a href="http://localhost:4000/auth/github">Login with GitHub</a>
+                <button >
+                  <a href="http://localhost:4000/auth/github">Login with GitHub</a>
+                </button>
               </li>
             )}
           </ul>
@@ -60,7 +65,7 @@ const App: React.FC = () => {
 const HomePage: React.FC = () => {
   return (
     <div>
-      <h1>Welcome to GitHub OAuth App</h1>
+      <h1>Welcome to GitHub Analytics</h1>
       <p>Please log in to access the home page.</p>
     </div>
   );
@@ -68,7 +73,7 @@ const HomePage: React.FC = () => {
 
 const Home: React.FC<{ user: User }> = ({ user }) => {
   return (
-    <div>
+    <div className="w-full bg-blue-full">
       <h1>Home Page</h1>
       <p>Welcome, {user.displayName}!</p>
     </div>
