@@ -1,3 +1,17 @@
+# To run this project: 
+
+# Step 1: Start the Backend
+In the backend folder, run:
+- cd backend
+- node index.js  
+This will start the OAuth backend at http://localhost:4000.
+
+# Step 2: Start the Frontend
+In the main my-oauth-app folder, run:
+- npm run dev
+
+This will start your Vite frontend at http://localhost:5173.
+
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
