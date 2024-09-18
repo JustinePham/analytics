@@ -22,3 +22,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+package-lock.json
+backend/package-lock.json
+package-lock.json
+backend/package-lock.json
