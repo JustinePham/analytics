@@ -26,6 +26,7 @@ const Navbar: React.FC = () => {
   const { user, logout, login } = useAuth();
   const navigate = useNavigate(); // Initialize useNavigate hook for navigation
 
+     
     // Fetch user data when Navbar is rendered (only once)
   
     useEffect(() => {
@@ -50,18 +51,14 @@ const Navbar: React.FC = () => {
     };
 
   return (
-    <nav className="flex flex-row top-0 fixed w-full justify-end p-4 items-center bg-teal-500">
+    user ? ( <nav className="flex flex-row top-0 fixed w-full justify-end p-4 items-center bg-teal-500">
     <ul className="flex flex-row gap-4 items-center">
-      {user ? (
-        <>
-          <li className="font-semibold text-white">Welcome, {user.displayName}</li>
-          <li>
-            <button onClick={handleLogout}>Logout</button>
-          </li>
-        </>
-      ) : (<></>)}
+      <li className="font-semibold text-white">Welcome, {user.displayName}</li>
+      <li>
+        <button onClick={handleLogout}>Logout</button>
+      </li>
     </ul>
-  </nav>
+  </nav>): (<></>)
   )
 }
 
