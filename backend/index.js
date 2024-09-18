@@ -5,9 +5,11 @@ const GitHubStrategy = require('passport-github2').Strategy;
 const session = require('express-session');
 const cors = require('cors');
 require('dotenv').config();
-
 const app = express();
 const PORT = 4000;
+
+
+
 
 // CORS setup to allow frontend requests
 app.use(cors({ origin: 'http://localhost:5173', credentials: true }));
@@ -33,6 +35,8 @@ passport.use(new GitHubStrategy(
   },
   (accessToken, refreshToken, profile, done) => {
     // You can use the profile information in your app here.
+    profile.accessToken = accessToken;
+    console.log('TOKEN: ',accessToken)
     return done(null, profile);
   }
 ));
@@ -52,20 +56,32 @@ app.get('/', (req, res) => {
 });
 
 // GitHub Auth route
-app.get('/auth/github', passport.authenticate('github', { scope: ['user:email'] }));
-
-// GitHub Auth Callback route
-app.get(
-  '/auth/github/callback',
-  passport.authenticate('github', { failureRedirect: '/' }),
+app.get('/auth/github', 
+  passport.authenticate('github', { scope: ['user:email'] }),
   (req, res) => {
-    // Redirect to frontend after successful login
-    res.redirect('http://localhost:5173/home');
+    
+    const clientId = process.env.GITHUB_CLIENT_ID;
+    const redirectUri = 'http://localhost:4000/auth/github/callback';
+    const githubAuthUrl = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}/integrations/github/oauth2/callback&scope=user`;
+  
+    res.redirect(githubAuthUrl);
+  }
+);
+
+app.get(
+  '/auth/github/callback', 
+  passport.authenticate('github', { failureRedirect: '/' }), 
+  (req, res) => {
+    const accessToken = req.user.accessToken
+    // On successful authentication, Passport will store the access token in the session
+    console.log('User authenticated:', req.user);
+    console.log('User token:', req.user.accessToken);
+    res.redirect(`http://localhost:5173/home`);
   }
 );
 
 // Get user data if authenticated
-app.get('/auth/user', (req, res) => {
+app.get('/auth/user', async (req, res) => {
   if (req.isAuthenticated()) {
     res.json(req.user);
   } else {

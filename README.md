@@ -7,7 +7,7 @@ In the backend folder, run:
 This will start the OAuth backend at http://localhost:4000.
 
 # Step 2: Start the Frontend
-In the main my-oauth-app folder, run:
+In the root folder, run:
 - npm run dev
 
 This will start your Vite frontend at http://localhost:5173.

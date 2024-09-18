@@ -1,14 +1,56 @@
-import React, { createContext, useContext, useState } from 'react';
 
+import axios from 'axios';
+import React, { createContext, useState, useContext, ReactNode } from 'react';
+
+
+export type User = {
+  accessToken: string;
+  displayName: string;
+  id: string;
+  emails: string[];
+  photos: string [];
+  profileUrl: string;
+  provider: string;
+  username: string;
+}
 interface AuthContextType {
-  email: string;
-  password: string;
-  setEmail: (email: string) => void;
-  setPassword: (password: string) => void;
+  authenticated: boolean;
+  login: (res: any) => void;
+  logout: () => void;
+  user: User | null;
 }
 
+// Create a default context value
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
+ 
+// AuthProvider component that provides the context value
+export const AuthProvider = ({ children }: { children: ReactNode }) => {
+  const [authenticated, setAuthenticated] = useState<boolean>(false);
+  const [ user , setUser ] = useState<User | null>(null)
+  // Function to log in (set authenticated to true)
+  const login = ( res: any ) => {
+    setAuthenticated(true);
+    setUser(res);
+  };
 
+  // Function to log out (set authenticated to false)
+  const logout = () => {
+    axios.get('http://localhost:4000/auth/logout', { withCredentials: true })
+    .then(() => {
+      setAuthenticated(false);
+      setUser(null);
+    }).catch((error) => {
+      console.error('Logout failed:', error);
+    });
+  };
+
+  return (
+    <AuthContext.Provider value={{ authenticated, login, logout, user}}>
+      {children}
+    </AuthContext.Provider>
+  );
+};
+// Custom hook to use the AuthContext
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
@@ -16,15 +58,4 @@ export const useAuth = () => {
   }
   return context;
 };
-
-export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [email, setEmail] = useState<string>('');
-  const [password, setPassword] = useState<string>('');
-
-  return (
-    <AuthContext.Provider value={{ email, password, setEmail, setPassword }}>
-      {children}
-      
-    </AuthContext.Provider>
-  );
-};
+export default AuthContext;
