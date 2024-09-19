@@ -102,7 +102,7 @@ const Dashboard: React.FC<{userDetails: UserDetails | null}> = ( { userDetails  
   return (
     <div className="flex flex-col w-full h-full flex-wrap gap-4">
       <h1 className="rounded-md bg-slate-50 p-4 bg-teal-200 text-bold">Dashboard</h1>
-        <UserProfileWidget></UserProfileWidget>
+      <UserProfileWidget></UserProfileWidget>
       <h2>Repos from {user?.login}</h2>
       <div className="flex flex-row gap-4 flex-wrap">
         <ReposWidget></ReposWidget>

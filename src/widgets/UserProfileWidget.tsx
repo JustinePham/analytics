@@ -41,7 +41,7 @@ const UserProfileWidget: React.FC = (   ) => {
            
         </div>
         <div className="rounded-md bg-slate-50 p-4 bg-teal-200 text-bold flex flex-wrap flex-row gap-4">
-        <span><label># of public repos: </label>{details.public_repos}</span>
+            <span><label># of public repos: </label>{details.public_repos}</span>
             <span><label># of public gists: </label>{details.public_gists}</span>
             <span><label># of followers: </label>{details.followers}</span>
             <span><label>following: </label>{details.following}</span>
