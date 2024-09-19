@@ -2,11 +2,12 @@ import { BrowserRouter as Router, Route, Routes, Navigate, useNavigate } from 'r
 import "./styles/App.scss"
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import UserSearch, { UserDetails } from './widgets/userSearch';
-import { AuthProvider, useAuth, User } from './AuthContext';
+import UserSearch from './widgets/userSearch';
+import { AuthProvider, useAuth } from './AuthContext';
 import { useDetails, UserDetailsProvider } from './SearchUserContext';
 import ReposWidget from './widgets/reposWidget';
 import UserProfileWidget from './widgets/UserProfileWidget';
+import { User, UserDetails } from './utilities/typings';
 
 const App: React.FC = () => {
   return (
@@ -49,14 +50,15 @@ const Navbar: React.FC = () => {
     };
 
   return (
-    user ? ( <nav className="flex flex-row top-0 fixed w-full justify-end p-4 items-center bg-teal-400">
-    <ul className="flex flex-row gap-4 items-center">
-      <li className="font-semibold text-white">Welcome, {user.displayName}</li>
-      <li>
-        <button onClick={handleLogout}>Logout</button>
-      </li>
-    </ul>
-  </nav>): (<></>)
+    user ? ( 
+    <nav className="flex flex-row top-0 fixed w-full justify-end p-4 items-center bg-teal-400">
+      <ul className="flex flex-row gap-4 items-center">
+        <li className="font-semibold text-white">Welcome, {user.displayName}</li>
+        <li>
+          <button onClick={handleLogout}>Logout</button>
+        </li>
+      </ul>
+    </nav>): (<></>)
   )
 }
 
@@ -101,9 +103,9 @@ const Dashboard: React.FC<{userDetails: UserDetails | null}> = ( { userDetails  
   }
   return (
     <div className="flex flex-col w-full h-full flex-wrap gap-4">
-      <h1 className="rounded-md bg-slate-50 p-4 bg-teal-200 text-bold">Dashboard</h1>
+      <h1 className="p-2 font-bold">Dashboard</h1>
       <UserProfileWidget></UserProfileWidget>
-      <h2>Repos from {user?.login}</h2>
+      <h2 className="p-2 font-bold">Repos from {user?.login}</h2>
       <div className="flex flex-row gap-4 flex-wrap">
         <ReposWidget></ReposWidget>
       </div>
@@ -113,7 +115,6 @@ const Dashboard: React.FC<{userDetails: UserDetails | null}> = ( { userDetails  
 
 const ProtectedRoute: React.FC<{ component: React.FC<{ user: User }> }> = ({ component: Component }) => {
   const { user } = useAuth();
-
   return user ? <Component user={user} /> : <Navigate to="/" />;
 };
 export default App;

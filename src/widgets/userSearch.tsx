@@ -2,28 +2,9 @@ import { useState } from 'react';
 import axios from 'axios';
 import _ from 'lodash'; // lodash for debounce
 import { useDetails } from '../SearchUserContext';
+import { UserDetails } from '../utilities/typings';
 
-export type UserDetails = {
-  avatar_url: string;
-  events_url: string;
-  followers_url: string;
-  following_url: string;
-  gists_url:string;
-  id: number;
-  html_url: string;
-  login: string;
-  node_id: string;
-  organizations_url: string;
-  received_events_url: string;
-  repos_url: string;
-  score: number;
-  site_admin: boolean;
-  starred_url: string;
-  subscriptions_url: string;
-  type: string;
-  url: string;
-
-}
+ 
 
 const UserSearch: React.FC<{onChange: (user:UserDetails) => void}> = ( { onChange  }) => {
   const { setUserDetails } = useDetails();
@@ -37,9 +18,7 @@ const UserSearch: React.FC<{onChange: (user:UserDetails) => void}> = ( { onChang
     try {
       setLoading(true);
       setError(null);
-
       const response = await axios.get(`https://api.github.com/search/users?q=${searchValue}`);
-
       setUsers(response.data.items);
       console.log(response.data.items);
 

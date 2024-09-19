@@ -1,28 +1,30 @@
 
 import { useEffect, useState } from 'react';
 import { useDetails } from '../SearchUserContext';
-import { UserDetails } from './userSearch';
-import { forEach } from 'lodash';
+import { UserDetails } from '../utilities/typings';
 
 
-type RepoDetails = {
 
-}
 const ReposWidget = () => {
     const { user } = useDetails();    
     const [repos, setRepos] = useState<any[]>([]); // Use state for repos 
+    const [loading, setLoading] = useState(false);
+
     const getRepos = async (user: UserDetails) => {
         const url: string = user.repos_url;
-            try {
-                const response = await fetch(url);
-                if (!response.ok) {
-                  throw new Error(`Response status: ${response.status}`);
-                 }
-                const data = await response.json();
-                setRepos(data);
-                console.log(repos);
-            } catch (error) {
-                console.error(error);
+        try {
+            setLoading(true);
+            const response = await fetch(url);
+            if (!response.ok) {
+                throw new Error(`Response status: ${response.status}`);
+            }
+            const data = await response.json();
+            setRepos(data);
+            console.log(repos);
+        } catch (error) {
+            console.error(error);
+        } finally {
+            setLoading(false);
         }
     };
     useEffect(() => {
@@ -32,7 +34,7 @@ const ReposWidget = () => {
     }, [user]);
      
     return (
-      repos.map(repo => ( 
+       repos.map(repo => ( 
             <RepoWidget key={repo.id} repo={repo}></RepoWidget>
         ))
     );

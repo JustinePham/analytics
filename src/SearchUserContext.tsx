@@ -1,6 +1,6 @@
 
 import React, { createContext, useState, useContext, ReactNode } from 'react';
-import { UserDetails } from './widgets/userSearch';
+import { UserDetails } from './utilities/typings';
 
 
 interface UserDetailsContext {

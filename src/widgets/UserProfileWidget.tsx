@@ -22,38 +22,45 @@ const UserProfileWidget: React.FC = (   ) => {
         getUserDetails()
     }, [user]);
 
-    return (
+    return ( 
+        details ? 
         <>
-        <div className="rounded-md bg-slate-50 p-4 bg-teal-200 text-bold gap-4 flex flex-wrap flex-row justify-between">
-            <div className="flex flex-wrap flex-row items-center gap-4 ">
-                <img src='https://avatars.githubusercontent.com/u/55029831?v=4' className="rounded-full h-28 w-28"></img>
-                <div>
-                    <h1 className="">{details.login}</h1>
-                    
-                    <span className="font-bold"><label></label>{details.bio}</span>
+            <div className=" gap-4 flex flex-wrap flex-row justify-between">
+                <div className="rounded-md bg-slate-50 p-4 bg-teal-200 text-bold flex flex-wrap flex-row items-center gap-4 flex-1 justify-center">
+                    <img src={details.avatar_url} className="rounded-full h-28 w-28"></img>
+                    <div className="flex flex-wrap flex-row items-center  flex-1">
+                        <h1 className="font-semibold">{details.login}</h1>
+                        <span className="font-semibold"><label></label>{details.bio}</span>
+                    </div>
                 </div>
-                
+                <div className="rounded-md bg-slate-50 p-4 bg-teal-200 text-bold flex flex-wrap flex-col gap-4 flex-1 ">
+                    <span className="font-bold"><label></label>{details.company}</span>
+                    <span className="font-bold"><label></label>{details.html_url}</span>            
+                </div>
             </div>
-            <div className="flex flex-wrap flex-col items-end gap-4 ">
-                <span className="font-bold"><label></label>{details.company}</span>
-                <span className="font-bold"><label></label>{details.html_url}</span>            
+            <div className="flex flex-wrap flex-row gap-4">
+            <span className="rounded-md bg-slate-50 p-4 bg-teal-200 font-semibold">
+                <span><label># of public repos: </label>{details.public_repos}</span>
+            </span>
+            <span className="rounded-md bg-slate-50 p-4 bg-teal-200 font-semibold">
+                <label># of public gists: </label>{details.public_gists}
+            </span>
+            <span className="rounded-md bg-slate-50 p-4 bg-teal-200 font-semibold">
+                <label># of followers: </label>{details.followers}
+            </span>    
+            <span className="rounded-md bg-slate-50 p-4 bg-teal-200 font-semibold">
+                <label>following: </label>{details.following}
+            </span>
             </div>
-           
-        </div>
-        <div className="rounded-md bg-slate-50 p-4 bg-teal-200 text-bold flex flex-wrap flex-row gap-4">
-            <span><label># of public repos: </label>{details.public_repos}</span>
-            <span><label># of public gists: </label>{details.public_gists}</span>
-            <span><label># of followers: </label>{details.followers}</span>
-            <span><label>following: </label>{details.following}</span>
-        </div>
         </>
+        : <></>
     );
 }
 
 
 const FollowerListWidget = () => {
     const { user } = useDetails()
-
+    
     return (
         <div className="rounded-md bg-slate-50 p-4 bg-teal-200 text-bold">
              
