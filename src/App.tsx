@@ -1,11 +1,12 @@
 import { BrowserRouter as Router, Route, Routes, Navigate, useNavigate } from 'react-router-dom'
 import "./styles/App.scss"
 import axios from 'axios';
-import { useEffect } from 'react';
-import UserSearch from './widgets/userSearch';
+import { useEffect, useState } from 'react';
+import UserSearch, { UserDetails } from './widgets/userSearch';
 import { AuthProvider, useAuth, User } from './AuthContext';
- 
-
+import { useDetails, UserDetailsProvider } from './SearchUserContext';
+import ReposWidget from './widgets/reposWidget';
+import UserProfileWidget from './widgets/UserProfileWidget';
 
 const App: React.FC = () => {
   return (
@@ -21,12 +22,9 @@ const App: React.FC = () => {
   );
 };
 
-
 const Navbar: React.FC = () => {
   const { user, logout, login } = useAuth();
   const navigate = useNavigate(); // Initialize useNavigate hook for navigation
-
-     
     // Fetch user data when Navbar is rendered (only once)
   
     useEffect(() => {
@@ -51,7 +49,7 @@ const Navbar: React.FC = () => {
     };
 
   return (
-    user ? ( <nav className="flex flex-row top-0 fixed w-full justify-end p-4 items-center bg-teal-500">
+    user ? ( <nav className="flex flex-row top-0 fixed w-full justify-end p-4 items-center bg-teal-400">
     <ul className="flex flex-row gap-4 items-center">
       <li className="font-semibold text-white">Welcome, {user.displayName}</li>
       <li>
@@ -63,7 +61,6 @@ const Navbar: React.FC = () => {
 }
 
 const LandingPage: React.FC = () => {
- 
   return (
     <div className='flex flex-col w-full h-full m-auto justify-center'>
       <div className="card">
@@ -78,15 +75,38 @@ const LandingPage: React.FC = () => {
 };
 
 const Home: React.FC = () => {
-  const { user } = useAuth();
+  const { user } = useAuth(); // user who is logged in
+  const [selectedUser, setSelectedUser] = useState<UserDetails | null>(null); // user selected from search
+
   if (!user) return null; // Ensure user exists before rendering
 
+  let defaultUser: UserDetails = Object.assign({}, user._json); // defaults to showing logged in user as selected user
+  if (!selectedUser) setSelectedUser(defaultUser); // sets default if no user is selected
+
   return (
-    <div className="flex flex-col w-full h-full mt-[77px] p-4">
-      <UserSearch></UserSearch>
-      <h1>Home Page</h1>
-      <p>Welcome, {user.displayName}!</p>
-      
+    <div className="flex flex-col w-full h-full mt-[77px] p-4 gap-y-4 bg-gradient-to-b from-teal-400">
+      <UserDetailsProvider>
+        <UserSearch onChange={setSelectedUser}></UserSearch>
+        <Dashboard userDetails={selectedUser} />
+      </UserDetailsProvider>
+    </div>
+  );
+};
+
+const Dashboard: React.FC<{userDetails: UserDetails | null}> = ( { userDetails  }) => {
+  const { user, setUserDetails } = useDetails();
+  if (!user && userDetails) {
+    // sets the user default user if none from provider
+    setUserDetails(userDetails)
+  }
+  return (
+    <div className="flex flex-col w-full h-full flex-wrap gap-4">
+      <h1 className="rounded-md bg-slate-50 p-4 bg-teal-200 text-bold">Dashboard</h1>
+        <UserProfileWidget></UserProfileWidget>
+      <h2>Repos from {user?.login}</h2>
+      <div className="flex flex-row gap-4 flex-wrap">
+        <ReposWidget></ReposWidget>
+      </div>
     </div>
   );
 };

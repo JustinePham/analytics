@@ -12,6 +12,7 @@ export type User = {
   profileUrl: string;
   provider: string;
   username: string;
+  _json: any;
 }
 interface AuthContextType {
   authenticated: boolean;
@@ -27,6 +28,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [authenticated, setAuthenticated] = useState<boolean>(false);
   const [ user , setUser ] = useState<User | null>(null)
+  
   // Function to log in (set authenticated to true)
   const login = ( res: any ) => {
     setAuthenticated(true);

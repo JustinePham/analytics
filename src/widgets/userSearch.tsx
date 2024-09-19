@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import axios from 'axios';
 import _ from 'lodash'; // lodash for debounce
+import { useDetails } from '../SearchUserContext';
 
-type UserDetails = {
+export type UserDetails = {
   avatar_url: string;
   events_url: string;
   followers_url: string;
@@ -24,23 +25,26 @@ type UserDetails = {
 
 }
 
-const UserSearch = () => {
+const UserSearch: React.FC<{onChange: (user:UserDetails) => void}> = ( { onChange  }) => {
+  const { setUserDetails } = useDetails();
   const [searchTerm, setSearchTerm] = useState('');
   const [users, setUsers] = useState<UserDetails[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-
+  const [selectedUser, setSelectedUser] = useState<UserDetails | null>(null);
+ 
   const fetchUsers = async (searchValue: string) => {
     try {
       setLoading(true);
       setError(null);
-      
+
       const response = await axios.get(`https://api.github.com/search/users?q=${searchValue}`);
 
       setUsers(response.data.items);
       console.log(response.data.items);
+
     } catch (error) {
-      setError('Failed to fetch users. Please try again.');
+      //setError('Failed to fetch users. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -60,6 +64,13 @@ const UserSearch = () => {
     }
   };
 
+  const handleSelected = (selected: UserDetails) =>  {
+    setSelectedUser(selected);
+    setUserDetails(selected);
+    onChange(selected); // emit the selected value
+    setSearchTerm ('');
+    setUsers([]);
+   }
 
   const handleEmpty = () => {
     return ( searchTerm === '' ? null : <p>No users found</p>) ;
@@ -67,7 +78,6 @@ const UserSearch = () => {
 
   return (
     <div>
-      <h3>User Search</h3>
       <input
         type="text"
         placeholder="Search GitHub users..."
@@ -75,17 +85,16 @@ const UserSearch = () => {
         onChange={handleSearch}
         className='bg-gray-50 border outline-slate-100 text-gray-300 text-sm rounded-lg focus:outline-slate-200 ring-blue-300 focus:border-blue-300 block w-full p-2.5 '
       />
-
-      {loading && <p>Loading...</p>}
-      {error && <p>{error}</p>}
-
       <ul className='bg-emerald-100	rounded-lg'>
+        {loading && <p>Loading...</p>}
+        {error && <p>{error}</p>}
         {users.length > 0 ? (
           users.map((user) => (
-            <li key={user.id} className='p-2 hover:bg-emerald-50'>
-              <a className="text-slate-400 uppercase" href={user.html_url} target="_blank" rel="noopener noreferrer">
+            <li key={user.id} className='p-2 hover:bg-emerald-50 hover:cursor-pointer' onClick={()=>handleSelected(user)}>
+              {/* <a className="text-slate-400 uppercase" href={user.html_url} target="_blank" rel="noopener noreferrer">
                 {user.login}
-              </a>
+              </a> */}
+              {user.login}
             </li>
           ))
         ) : (
