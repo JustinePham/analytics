@@ -96,16 +96,20 @@ const Home: React.FC = () => {
 };
 
 const Dashboard: React.FC<{userDetails: UserDetails | null}> = ( { userDetails  }) => {
-  const { user, setUserDetails } = useDetails();
-  if (!user && userDetails) {
-    // sets the user default user if none from provider
-    setUserDetails(userDetails)
-  }
+ const { user, setUserDetails } = useDetails();
+ 
+  useEffect(() => {
+    if (!user && userDetails) {
+      // sets the user default user if none from provider
+      setUserDetails(userDetails)
+    }
+  }, [user]);
+
   return (
     <div className="flex flex-col w-full h-full flex-wrap gap-4">
       <h1 className="p-2 font-bold">Dashboard</h1>
       <UserProfileWidget></UserProfileWidget>
-      <h2 className="p-2 font-bold">Repos from {user?.login}</h2>
+      {/* <h2 className="p-2 font-bold">Repos from {user?.login}</h2> */}
       <div className="flex flex-row gap-4 flex-wrap">
         <ReposWidget></ReposWidget>
       </div>
