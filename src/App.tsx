@@ -51,7 +51,7 @@ const Navbar: React.FC = () => {
 
   return (
     user ? ( 
-    <nav className="flex flex-row top-0 fixed w-full justify-end p-4 items-center bg-teal-300">
+    <nav className="flex flex-row top-0 fixed w-full justify-end p-4 items-center bg-teal-400">
       <ul className="flex flex-row gap-4 items-center">
         <li className="font-semibold text-white">Welcome, {user.displayName}</li>
         <li>
