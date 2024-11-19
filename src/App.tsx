@@ -51,7 +51,7 @@ const Navbar: React.FC = () => {
 
   return (
     user ? ( 
-    <nav className="flex flex-row top-0 fixed w-full justify-end p-4 items-center bg-teal-400">
+    <nav className="flex flex-row top-0 fixed w-full justify-end p-4 items-center bg-teal-300">
       <ul className="flex flex-row gap-4 items-center">
         <li className="font-semibold text-white">Welcome, {user.displayName}</li>
         <li>
@@ -86,7 +86,7 @@ const Home: React.FC = () => {
   if (!selectedUser) setSelectedUser(defaultUser); // sets default if no user is selected
 
   return (
-    <div className="flex flex-col w-full h-full mt-[77px] p-4 gap-y-4 bg-gradient-to-b from-teal-400">
+    <div className="flex flex-col w-full h-full mt-[77px] p-4 gap-y-4 ">
       <UserDetailsProvider>
         <UserSearch onChange={setSelectedUser}></UserSearch>
         <Dashboard userDetails={selectedUser} />
@@ -109,7 +109,7 @@ const Dashboard: React.FC<{userDetails: UserDetails | null}> = ( { userDetails  
     <div className="flex flex-col w-full h-full flex-wrap gap-4">
       <h1 className="p-2 font-bold">Dashboard</h1>
       <UserProfileWidget></UserProfileWidget>
-      {/* <h2 className="p-2 font-bold">Repos from {user?.login}</h2> */}
+      <h2 className="p-2 font-bold">Repos from {user?.login}</h2>
       <div className="flex flex-row gap-4 flex-wrap">
         <ReposWidget></ReposWidget>
       </div>
